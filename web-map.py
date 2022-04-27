@@ -1,6 +1,24 @@
 import folium
 import pandas
 
+
+def color_on_elev(elevation):
+    """
+
+    :param elevation: float of volcano elevation
+    :return: color: defined color based on elevation
+    """
+    if elevation < 1000:
+        color = "green"
+    elif 1000 <= elevation < 2000:
+        color = "orange"
+    elif 2000 <= elevation < 3000:
+        color = "red"
+    else:
+        color = "purple"
+    return color
+
+
 # TODO: ask for user input on where the starting location of the map should be
 # Budapest coordinates
 map = folium.Map(location=[47.497913, 19.040236], zoom_start=7, tiles='Stamen Terrain')
@@ -20,7 +38,9 @@ fg = folium.FeatureGroup(name="Web Map")
 
 for n, e, lt, ln in zip(volcano_name, volcano_elev, volcano_lat, volcano_lon):
     iframe = folium.IFrame(html=html %(n, n, str(e)), width=200, height=100)
-    fg.add_child(folium.Marker(location=[lt, ln], popup=folium.Popup(iframe), icon=folium.Icon(color="orange")))
+    fg.add_child(folium.CircleMarker(location=[lt, ln], radius=6,
+                 popup=folium.Popup(iframe),fill_color=color_on_elev(e),
+                            color="black", fill=True, fill_opacity=0.6))
 
 map.add_child(fg)
 
