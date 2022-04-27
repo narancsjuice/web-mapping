@@ -21,7 +21,8 @@ def color_on_elev(elevation):
 
 # TODO: ask for user input on where the starting location of the map should be
 # Budapest coordinates
-map = folium.Map(location=[47.497913, 19.040236], zoom_start=7, tiles='Stamen Terrain')
+map = folium.Map(location=[47.497913, 19.040236], zoom_start=7,
+                 tiles='Stamen Terrain')
 
 volcano_data = pandas.read_csv("volcano_markers.csv")
 volcano_name = list(volcano_data["NAME"])
@@ -39,7 +40,7 @@ fg = folium.FeatureGroup(name="Web Map")
 for n, e, lt, ln in zip(volcano_name, volcano_elev, volcano_lat, volcano_lon):
     iframe = folium.IFrame(html=html %(n, n, str(e)), width=200, height=100)
     fg.add_child(folium.CircleMarker(location=[lt, ln], radius=6,
-                 popup=folium.Popup(iframe),fill_color=color_on_elev(e),
+                 popup=folium.Popup(iframe), fill_color=color_on_elev(e),
                             color="black", fill=True, fill_opacity=0.6))
 
 map.add_child(fg)
