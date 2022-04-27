@@ -68,8 +68,8 @@ for index, coordinate in enumerate(location):
             location[index] = lon
             print(f"Latitude is set by default to {lon}.")
 
-map = folium.Map(location=[47.497913, 19.040236], zoom_start=7,
-                 tiles='Stamen Terrain')
+map = folium.Map(location=[location[0], location[1]], zoom_start=7,
+                 tiles="Stamen Terrain")
 
 volcano_data = pandas.read_csv("volcano_markers.csv")
 volcano_name = list(volcano_data["NAME"])
@@ -89,6 +89,12 @@ for n, e, lt, ln in zip(volcano_name, volcano_elev, volcano_lat, volcano_lon):
     fg.add_child(folium.CircleMarker(location=[lt, ln], radius=6,
                  popup=folium.Popup(iframe), fill_color=color_on_elev(e),
                             color="black", fill=True, fill_opacity=0.6))
+
+fg.add_child(folium.GeoJson(data=open("world.json", "r", encoding="utf-8-sig").read(),
+             style_function=lambda x: {"fillColor": "green"
+             if x["properties"]["POP2005"] < 10000000
+             else "orange" if 10000000 <= x["properties"]["POP2005"] < 100000000
+             else "red"}))
 
 map.add_child(fg)
 
