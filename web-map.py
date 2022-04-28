@@ -121,7 +121,6 @@ map.add_child(fg1)
 map.add_child(fg2)
 map.add_child(fg3)
 map.add_child(folium.LayerControl())
-
 map.save("map1.html")
-
 webbrowser.open("map1.html")
+
