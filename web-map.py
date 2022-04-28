@@ -1,3 +1,4 @@
+import webbrowser
 import folium
 import pandas
 
@@ -68,8 +69,8 @@ for index, coordinate in enumerate(location):
             location[index] = lon
             print(f"Latitude is set by default to {lon}.")
 
-map = folium.Map(location=[47.497913, 19.040236], zoom_start=7,
-                 tiles='Stamen Terrain')
+map = folium.Map(location=[location[0], location[1]], zoom_start=7,
+                 tiles="Stamen Terrain")
 
 volcano_data = pandas.read_csv("volcano_markers.csv")
 volcano_name = list(volcano_data["NAME"])
@@ -109,7 +110,17 @@ for n, lt, ln, pop in zip(cities_name, cities_lat, cities_lon, cities_pop):
                                     icon=folium.Icon(color="purple",
                                     icon_color="blue", icon="thumb-tack", prefix="fa" )))
 
+fg3 = folium.FeatureGroup(name="Population Color")
+fg3.add_child(folium.GeoJson(data=open("world.json", "r", encoding="utf-8-sig").read(),
+                             style_function=lambda x: {"fillColor": "green"
+                             if x["properties"]["POP2005"] < 10000000
+                             else "orange" if 10000000 <= x["properties"]["POP2005"] < 100000000
+                             else "red"}))
+
 map.add_child(fg1)
 map.add_child(fg2)
-
+map.add_child(fg3)
+map.add_child(folium.LayerControl())
 map.save("map1.html")
+webbrowser.open("map1.html")
+
