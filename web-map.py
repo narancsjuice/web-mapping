@@ -77,19 +77,39 @@ volcano_lat = list(volcano_data["LAT"])
 volcano_lon = list(volcano_data["LON"])
 volcano_elev = list(volcano_data["ELEV"])
 
-html = """<h4>Volcano information:</h4>
+html1 = """<h4>Volcano information:</h4>
 Name: <a href="https://www.google.com/search?q=%s" target="_blank">%s</a><br>
 Height: %s m
 """
 
-fg = folium.FeatureGroup(name="Web Map")
-
+fg1 = folium.FeatureGroup(name="Volcano Markers")
 for n, e, lt, ln in zip(volcano_name, volcano_elev, volcano_lat, volcano_lon):
-    iframe = folium.IFrame(html=html %(n, n, str(e)), width=200, height=100)
-    fg.add_child(folium.CircleMarker(location=[lt, ln], radius=6,
+    iframe = folium.IFrame(html=html1 %(n, n, str(e)), width=200, height=100)
+    fg1.add_child(folium.CircleMarker(location=[lt, ln], radius=6,
                  popup=folium.Popup(iframe), fill_color=color_on_elev(e),
                             color="black", fill=True, fill_opacity=0.6))
 
-map.add_child(fg)
+cities_data = pandas.read_csv("cities_hu.csv")
+cities_name = cities_data["city"]
+cities_lat = cities_data["lat"]
+cities_lon = cities_data["lng"]
+cities_pop = cities_data["population"]
+
+html2 = """<h4>City information:</h4>
+Name: <a href="https://www.google.com/search?q=%s" target="_blank">%s</a><br>
+Population: %s
+"""
+
+fg2 = folium.FeatureGroup(name="City Markers")
+for n, lt, ln, pop in zip(cities_name, cities_lat, cities_lon, cities_pop):
+    iframe2 = folium.IFrame(html=html2 %(n, n, pop), width=200, height=100)
+    if pop >= 10000:
+        fg2.add_child(folium.Marker(location=[lt, ln], radius=6,
+                                    popup=folium.Popup(iframe2),
+                                    icon=folium.Icon(color="purple",
+                                    icon_color="blue", icon="thumb-tack", prefix="fa" )))
+
+map.add_child(fg1)
+map.add_child(fg2)
 
 map.save("map1.html")
